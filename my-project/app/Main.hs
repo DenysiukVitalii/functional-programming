@@ -1,7 +1,5 @@
 module Main where
 
---import Lib // error import ???
---import MyChar // error import ???
 import Text.Printf (printf)
 import Data.List()
 import Data.Char
