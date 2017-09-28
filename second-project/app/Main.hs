@@ -12,7 +12,7 @@ main = do
     print (isSorted 1 2 3)
 
 solve2 :: Double -> Double -> (Bool, Double)
-solve2 a b | -b / a /= 0 = (True, -b / a)
+solve2 a b | (-b / a /= 0 && (b /= 0.0 && a /= 0.0)) = (True, -b / a)
            | otherwise = (False, 0.0)
 
 max3 :: Int -> Int -> Int -> Int
