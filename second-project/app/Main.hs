@@ -49,3 +49,12 @@ isPalindrome xs  = (head xs) == (last xs) && (isPalindrome (init $ tail xs))
 splitAt' :: [Char] -> Int -> ([Char], [Char])
 splitAt' str n = (take n str, drop n str)
 
+sieve :: [Integer] -> [Integer]
+sieve [] = []
+sieve (x:xs) = x : (sieve $ filter (\ y -> (y `mod` x) /= 0) xs )
+ 
+factorize :: Integer -> [Integer]
+factorize n = filter (\ x -> (n `mod` x)==0) $ sieve [2,3..n `div` 2]
+ 
+task :: Integer -> [Integer]
+task n = map (\ f -> (f)) $ factorize n
