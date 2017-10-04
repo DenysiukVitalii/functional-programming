@@ -34,3 +34,14 @@ isParallel (x1, y1) (x2, y2)
 isSorted :: Int -> Int -> Int -> Bool
 isSorted a b c | a < b && b < c = True  
                | otherwise = False
+
+cutList :: [Int] -> [Int]
+cutList xs = init $ tail xs
+
+isPalindrome' :: [Int] -> Bool
+isPalindrome' xs = xs == (reverse xs)
+
+isPalindrome :: [Int] -> Bool
+isPalindrome [] = True
+isPalindrome [_] = True
+isPalindrome xs  = (head xs) == (last xs) && (isPalindrome (init $ tail xs))
