@@ -58,3 +58,10 @@ factorize n = filter (\ x -> (n `mod` x)==0) $ sieve [2,3..n `div` 2]
  
 task :: Integer -> [Integer]
 task n = map (\ f -> (f)) $ factorize n
+
+isPrime :: Integer -> Bool
+isPrime x = divisors x == [1,x]
+
+divisors :: Integer -> [Integer]
+divisors 1 = [1]
+divisors x = 1:[ y | y <- [2..(x `div` 2)], x `mod` y == 0] ++ [x]
