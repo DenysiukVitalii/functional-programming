@@ -56,8 +56,8 @@ sieve (x:xs) = x : (sieve $ filter (\ y -> (y `mod` x) /= 0) xs )
 factorize :: Integer -> [Integer]
 factorize n = filter (\ x -> (n `mod` x)==0) $ sieve [2,3..n `div` 2]
  
-task :: Integer -> [Integer]
-task n = map (\ f -> (f)) $ factorize n
+--task :: Integer -> [Integer]
+--task n = map (\ f -> (f)) $ factorize n
 
 isPrime :: Integer -> Bool
 isPrime x = divisors x == [1,x]
@@ -65,3 +65,12 @@ isPrime x = divisors x == [1,x]
 divisors :: Integer -> [Integer]
 divisors 1 = [1]
 divisors x = 1:[ y | y <- [2..(x `div` 2)], x `mod` y == 0] ++ [x]
+
+is_prime :: Integer -> Bool
+is_prime 1 = False
+is_prime 2 = True
+is_prime n | (length [x | x <- [2 .. n-1], n `mod` x == 0]) > 0 = False
+           | otherwise = True
+
+task :: Integer -> [Integer]
+task n = filter (\x -> if (is_prime x) then True else False) (divisors n)
