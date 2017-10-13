@@ -67,10 +67,17 @@ divisors 1 = [1]
 divisors x = 1:[ y | y <- [2..(x `div` 2)], x `mod` y == 0] ++ [x]
 
 is_prime :: Integer -> Bool
-is_prime 1 = False
+is_prime 1 = False  
 is_prime 2 = True
 is_prime n | (length [x | x <- [2 .. n-1], n `mod` x == 0]) > 0 = False
            | otherwise = True
 
 task :: Integer -> [Integer]
 task n = filter (\x -> if (is_prime x) then True else False) (divisors n)
+
+
+is_prime' :: Integer -> Bool
+is_prime' n = length (divisors n) == 2 
+
+mySum :: [Integer] -> Integer -> Integer -> Integer
+mySum xs a b = sum (filter (\x -> if (x >= a && x <= b) then True else False) xs)
