@@ -2,6 +2,7 @@ module Main where
 
 import System.Info
 import Data.Bool
+import Text.Show
 
 main :: IO ()
 main = do
@@ -81,3 +82,30 @@ is_prime' n = length (divisors n) == 2
 
 mySum :: [Integer] -> Integer -> Integer -> Integer
 mySum xs a b = sum (filter (\x -> if (x >= a && x <= b) then True else False) xs)
+
+
+
+data Font = Consolas | LucidaConsole | SourceCodePro deriving (Show)  
+data Point = Point Float Float deriving (Show)
+--data Point = Point {x :: Float, y :: Float} deriving (Show)
+data Shape = Circle Point Float | 
+             Rectangle Point Point | 
+             Triangle Point Point Point |
+             Label Point Font String deriving (Show)  
+
+surface :: Shape -> Float  
+surface (Circle _ r) = pi * r ^ 2  
+surface (Rectangle (Point x1 y1) (Point x2 y2)) = (abs $ x2 - x1) * (abs $ y2 - y1)
+surface (Triangle (Point x1 y1) (Point x2 y2) (Point x3 y3)) = 
+        0.5 * ((x1*y2 + x2*y3 + x3*y1)-(y1*x2 + y2*x3 + y3*x1))
+
+database :: [Shape]
+database = [(Circle (Point 2 5) 5), (Circle (Point 1 4) 3), (Circle (Point 8 3) 4),
+            (Rectangle (Point 0 5) (Point 10 0)), (Rectangle (Point 3 5) (Point 10 0)),(Rectangle (Point 0 10) (Point 20 0)),
+            (Triangle (Point 1 1) (Point 2 2) (Point 3 1)), (Triangle (Point 2 5) (Point 5 8) (Point 9 1))]
+
+includedEvery :: [Shape]
+includedEvery = [ s | s <- database, (surface s) > 10]
+
+
+
