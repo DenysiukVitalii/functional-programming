@@ -108,4 +108,15 @@ includedEvery :: [Shape]
 includedEvery = [ s | s <- database, (surface s) > 10]
 
 
+sum' :: [Integer] -> Integer
+sum' [] = 0
+sum' (x:xs) = x + sum' xs
 
+getPartHalf :: [Integer] -> [Integer]
+getPartHalf xs = take ((length xs) `div` 2) xs
+
+findSum' :: [Integer] -> Integer -> Integer
+findSum' xs n = sum' [x | x <- getPartHalf xs, x == n]
+
+findSum'' :: [Integer] -> Integer -> Integer
+findSum'' xs n = sum' ( filter ( == n) (getPartHalf xs) )
