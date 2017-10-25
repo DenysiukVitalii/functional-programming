@@ -3,6 +3,7 @@ module Main where
 import System.Info
 import Data.Bool
 import Text.Show
+import Data.Typeable
 
 main :: IO ()
 main = do
@@ -104,9 +105,51 @@ database = [(Circle (Point 2 5) 5), (Circle (Point 1 4) 3), (Circle (Point 8 3) 
             (Rectangle (Point 0 5) (Point 10 0)), (Rectangle (Point 3 5) (Point 10 0)),(Rectangle (Point 0 10) (Point 20 0)),
             (Triangle (Point 1 1) (Point 2 2) (Point 3 1)), (Triangle (Point 2 5) (Point 5 8) (Point 9 1))]
 
-includedEvery :: [Shape]
-includedEvery = [ s | s <- database, (surface s) > 10]
+includedEvery :: Typeable a => a -> [Shape]
+includedEvery shape = filter (\ e -> typeOf e == typeOf shape) database
 
+data Date = Date {day :: Integer, month :: Integer} deriving (Show) 
+data Meeting = Meeting {date :: Date, place :: String, describe :: String, wasMeeting :: Bool} deriving (Show) 
+data Note = Note { name :: String, phone :: String, birthday :: Date, meetings :: [Meeting] } deriving (Show) 
+
+notebook :: [Note]
+notebook = [Note { name = "Peter", 
+                   phone = "+1 492-223-2780", 
+                   birthday = Date {day = 3, month = 11},
+                   meetings = [ Meeting { date = Date {day = 5, month = 10}, 
+                                           place = "New York", 
+                                           describe = "Near Manhattan", 
+                                           wasMeeting = True},
+                                Meeting { date = Date {day = 29, month = 12}, 
+                                           place = "Las Vegas", 
+                                           describe = "Near Hotel Bellagio", 
+                                           wasMeeting = False}]},
+            Note { name = "John", 
+            phone = "+1 323-798-1670", 
+            birthday = Date {day = 15, month = 3},
+            meetings = [ Meeting { date = Date {day = 16, month = 5}, 
+                                    place = "New York", 
+                                    describe = "Near Empire State", 
+                                    wasMeeting = True},
+                        Meeting { date = Date {day = 4, month = 9}, 
+                                    place = "Los Angeles", 
+                                    describe = "Near Tussauds's Museum", 
+                                    wasMeeting = False}]}
+            ]
+
+findFirstLetterName :: Char -> [Note]
+findFirstLetterName s = filter (\ e -> (name e)!!0 == s) notebook
+
+flatten :: [[a]] -> [a]         
+flatten xs = (\z n -> foldr (\x y -> foldr z y x) n xs) (:) []
+
+getMeetings :: [Meeting]
+getMeetings = flatten (map (\i -> meetings i) notebook)
+
+noMeetings :: [Meeting]
+noMeetings = filter (\i -> wasMeeting i == False) getMeetings
+
+-- ///////////////////////////////////////////////////////////
 
 sum' :: [Integer] -> Integer
 sum' [] = 0
