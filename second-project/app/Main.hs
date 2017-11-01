@@ -1,3 +1,7 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
 import System.Info
@@ -5,13 +9,26 @@ import Data.Bool
 import Text.Show
 import Data.Typeable
 
+
+import Database.MySQL.Simple 
+import Control.Monad
+import qualified Data.Text as Text
+
 main :: IO ()
 main = do
-    print (solve2 2.5 2.3)
-    print (max3 2 4 1)
-    print (sort2 4 2)
-    print (isParallel (1,1) (2,2) (2,0) (4,2))
-    print (isSorted 1 2 3)
+    conn <- connect defaultConnectInfo { 
+      connectUser = "root", 
+      connectPassword = "1111", 
+      connectDatabase = "quizzzyDB"
+    }
+    -- execute conn "insert into users (username, role, password) values (?, ?, ?)" 
+    --              ["Mike" :: String, "student" :: String, "qwerty123" :: String]
+    --execute conn "delete from users where username = ?" ["Mike":: String]
+    users <- query_ conn "select username, password from users"
+    forM_ users $ \(username, password) ->
+        putStrLn $ Text.unpack username ++ " " ++ Text.unpack password
+    close conn
+
 
 solve2 :: Double -> Double -> (Bool, Double)
 solve2 a b | (-b / a /= 0 && (b /= 0.0 && a /= 0.0)) = (True, -b / a)
@@ -105,16 +122,16 @@ database = [(Circle (Point 2 5) 5), (Circle (Point 1 4) 3), (Circle (Point 8 3) 
             (Rectangle (Point 0 5) (Point 10 0)), (Rectangle (Point 3 5) (Point 10 0)),(Rectangle (Point 0 10) (Point 20 0)),
             (Triangle (Point 1 1) (Point 2 2) (Point 3 1)), (Triangle (Point 2 5) (Point 5 8) (Point 9 1))]
 
-includedEvery :: Typeable a => a -> [Shape]
-includedEvery shape = filter (\ e -> typeOf e == typeOf shape) database
+includedEvery :: Float -> [Shape]
+includedEvery n = filter (\ e -> if (surface e > n) then True else False) database
 
 data Date = Date {day :: Integer, month :: Integer} deriving (Show) 
 data Meeting = Meeting {date :: Date, place :: String, describe :: String, wasMeeting :: Bool} deriving (Show) 
-data Note = Note { name :: String, phone :: String, birthday :: Date, meetings :: [Meeting] } deriving (Show) 
+data Note = Note { name :: String, phone :: [String], birthday :: Date, meetings :: [Meeting] } deriving (Show) 
 
 notebook :: [Note]
 notebook = [Note { name = "Peter", 
-                   phone = "+1 492-223-2780", 
+                   phone = ["+1 492-223-2780"], 
                    birthday = Date {day = 3, month = 11},
                    meetings = [ Meeting { date = Date {day = 5, month = 10}, 
                                            place = "New York", 
@@ -125,7 +142,7 @@ notebook = [Note { name = "Peter",
                                            describe = "Near Hotel Bellagio", 
                                            wasMeeting = False}]},
             Note { name = "John", 
-            phone = "+1 323-798-1670", 
+            phone = ["+1 323-798-1670"], 
             birthday = Date {day = 15, month = 3},
             meetings = [ Meeting { date = Date {day = 16, month = 5}, 
                                     place = "New York", 
