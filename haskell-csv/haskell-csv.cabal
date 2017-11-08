@@ -5,7 +5,7 @@ synopsis:            Reading CSV from file.
 -- description:         
 homepage:            haskelldata.com
 license:             GPL-2
-license-file:        ./LICENSE
+license-file:        ../LICENSE
 author:              Vitalii Denysiuk
 maintainer:          vitalii_denysiuk@ukr.net
 -- copyright:           
@@ -18,6 +18,6 @@ executable haskell-csv
   main-is:             Main.hs
   --other-modules: text      
   -- other-extensions:    
-  build-depends:       base >=4.6 && <5, csv >0.1, text
+  build-depends:       base >=4.6 && <5, csv >0.1, text, time, split
   -- hs-source-dirs:      
   default-language:    Haskell2010
