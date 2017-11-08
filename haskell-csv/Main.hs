@@ -9,14 +9,21 @@ main = do
   either handleError doWork csv
   
 handleError csv = putStrLn "not a CSV"
-doWork csv = (print.findOldest.tail) (filter (\x -> length x == 2) csv)
+doWork csv =  print ((findFirstLetterName.tail) csv 'A') 
+       --csv = print ((noMeetings.tail) csv)
+       
+noMeetings :: [Record] -> [Record]
+noMeetings [] = []
+noMeetings items = filter (\ i -> wasmeeting i == "no") items 
 
--- Finds oldest person.
-findOldest :: [Record] -> Record
-findOldest [] = []
-findOldest items = foldl1 (\a x -> if age x > age a then x else a) items
+findFirstLetterName :: [Record] -> Char -> [String]
+findFirstLetterName items s = map (\ e -> (name e)) (filter (\ e -> (name e)!!0 == s) items)
 
-age [a,b] = toInt b
+wasmeeting [_,_,_,_,_,a] = wasMeeting a
+name [a,_,_,_,_,_] = getName a
 
-toInt :: String -> Int                               
-toInt = read
+getName :: String -> String
+getName item = item 
+
+wasMeeting :: String -> String
+wasMeeting item = item 
