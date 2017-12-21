@@ -1,72 +1,32 @@
 import Text.CSV
-import Data.Time.Clock
-import Data.Time.Calendar
-import Data.Time.LocalTime
-import Data.Time.Calendar.WeekDate
-import Data.List.Split
 
 -- Parses a CSV file
 main :: IO ()
 main = do
-  now <- getCurrentTime
-  --print (diffDays (getDay "2017-12-2") (utctDay now))
   let fileName = "notebook.csv"
   input <- readFile fileName
   let csv = parseCSV fileName input
-  either handleError doWork csv now
+  either handleError doWork csv
   
-handleError csv now = putStrLn "not a CSV"
-doWork csv now = print ((findFirstLetterName.tail) csv 'A') 
-                 --print ((noMeetings.tail) csv)
-                 --print (closestMeeting csv now) 
-
-noMeetings :: [Record] -> [Record]
-noMeetings [] = []
-noMeetings items = filter (\ i -> wasmeeting i == "no") items 
-
-closestMeeting :: [Record] -> UTCTime -> Record
-closestMeeting items now = foldl1 (\a x -> 
-  if (diffDays (getDay (daymeeting x)) (utctDay now)) < 
-     (diffDays (getDay (daymeeting a)) (utctDay now)) then x else a) (noMeetings items)
-
+handleError csv = putStrLn "not a CSV"
+doWork csv = print ((findFirstLetterName.tail) csv 'A') 
+               
 findFirstLetterName :: [Record] -> Char -> [String]
 findFirstLetterName items s = map (\ e -> (name e)) (filter (\ e -> (name e)!!0 == s) items)
 
-wasmeeting [_,_,_,_,_,a] = wasMeeting a
 name [a,_,_,_,_,_] = getName a
-daymeeting [_,_,_,_,a,_] = dayMeeting a
 
 getName :: String -> String
 getName item = item 
 
-wasMeeting :: String -> String
-wasMeeting item = item 
+data Book = Book { bookname :: String, author :: String, city :: String, house :: String, year :: Integer  } deriving (Show) 
 
-dayMeeting :: String -> String
-dayMeeting item = item 
+books :: [Book]
+books = [Book {bookname = "Book1", author = "Author1", city = "City1", house = "House1", year = 2017},
+         Book {bookname = "Book2", author = "Author2", city = "City2", house = "House2", year = 2016}];
 
-getDatesMeeting :: [Record] -> [String]
-getDatesMeeting items = map (\ i -> daymeeting i) items
+getBooksByAuthor :: [Book] -> String -> [Book]
+getBooksByAuthor books a = filter (\ book -> if (book author == a) then True else False) books
 
-getDay :: String -> Day
-getDay date = fromGregorian (returnYear (toYear date) 0) 
-                            (returnDM (toDate date) 1) 
-                            (returnDM (toDate date) 2)
-
-toDate :: String -> [Int]
-toDate str = map (\i -> toInt i) (splitOn "-" str)
-
-toYear :: String -> [Integer]
-toYear str = map (\i -> toInteger' i) (splitOn "-" str)
-
-returnYear :: [Integer] -> Int -> Integer
-returnYear arr index = arr !! index
-
-returnDM :: [a] -> Int -> a
-returnDM arr index = arr !! index
-
-toInt :: String -> Int                              
-toInt = read
-
-toInteger' :: String -> Integer                              
-toInteger' = read
+getBookName :: (Book -> String) -> String
+getBookName a = show a

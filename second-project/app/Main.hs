@@ -19,14 +19,18 @@ main = do
       connectPassword = "1111", 
       connectDatabase = "quizzzyDB"
     }
-    -- execute conn "insert into users (username, role, password) values (?, ?, ?)" 
+    --execute conn "insert into users (username, role, password) values (?, ?, ?)" 
     --              ["Mike" :: String, "student" :: String, "qwerty123" :: String]
-    --execute conn "delete from users where username = ?" ["Mike":: String]
+    --execute conn "delete from users where username = ?" ["tester":: String]
     users <- query_ conn "select username, password from users"
     forM_ users $ \(username, password) ->
-        putStrLn $ Text.unpack username ++ " " ++ Text.unpack password
+       putStrLn $ username ++ " " ++ password
     close conn
 
+replace' :: Int -> [Int] -> [Int]
+replace' value list = map (\ a -> if (a < (list !! a + 1) && 
+                                      a < (list !! a + 2) && 
+                                      a + 1 < length list) then value else a) list
 
 solve2 :: Double -> Double -> (Bool, Double)
 solve2 a b | (-b / a /= 0 && (b /= 0.0 && a /= 0.0)) = (True, -b / a)
